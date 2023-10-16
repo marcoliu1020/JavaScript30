@@ -14,25 +14,24 @@
             canvas.height = window.innerHeight;
 
             const canvasContext = canvas.getContext("2d");
-            canvasContext.lineWidth = 10;
-            canvasContext.lineCap = "round";
-            canvasContext.lineJoin = "round";
-            canvasContext.strokeStyle = "#bada55";
+            canvasContext.strokeStyle = "#BADA55"; // 設定勾勒圖形時用的顏色
+            canvasContext.lineJoin = "round"; // 讓線條轉彎時它的拐角是圓的
+            canvasContext.lineCap = "round"; // 讓線條末端是圓的
+            canvasContext.lineWidth = 10; // 線條寬度
             // ctx.globalCompositeOperation = "multiply";
-            const { startDrawing, exitDrawing, drawLinew } = new Draw(canvasContext);
+            const { startDrawing, exitDrawing, drawLine, drawSpecialLine } = new Draw(canvasContext);
 
             // events
-            canvas.addEventListener("mousemove", drawLinew);
+            canvas.addEventListener("mousemove", drawLine);
+            // canvas.addEventListener("mousemove", drawSpecialLine);
             canvas.addEventListener("mousedown", startDrawing);
             canvas.addEventListener("mouseup", exitDrawing);
             canvas.addEventListener("mouseout", exitDrawing);
 
             function Draw(canvasContext) {
-                let hue = 0;
                 let lastPos = { x: 0, y: 0 };
                 let isDrawing = false;
-                let isLineWidthLarger = true;
-                return { startDrawing, exitDrawing, drawLine };
+                return { startDrawing, exitDrawing, drawLine, drawSpecialLine: drawSpecialLine() };
 
                 // helpers
                 function startDrawing(e) {
@@ -44,18 +43,34 @@
                 }
                 function drawLine(e) {
                     if (!isDrawing) return;
-                    // console.log(e);
-                    canvasContext.strokeStyle = `hsl(${hue}, 100%, 50%)`;
                     canvasContext.beginPath();
                     canvasContext.moveTo(lastPos.x, lastPos.y); // start from
                     canvasContext.lineTo(e.clientX, e.clientY); // go to
                     canvasContext.stroke();
                     lastPos = { x: e.clientX, y: e.clientY };
+                }
+                function drawSpecialLine() {
+                    let hue = 0;
+                    let isLineWidthIncreasing = true;
 
-                    if (hue++ >= 360) hue = 0;
-                    if (canvasContext.lineWidth >= 100 || canvasContext.lineWidth <= 1) isLineWidthLarger = !isLineWidthLarger;
-                    if (isLineWidthLarger) canvasContext.lineWidth++;
-                    else canvasContext.lineWidth--;
+                    return function (e) {
+                        // 控制顏色
+                        canvasContext.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                        hue += 10;
+
+                        // 控制線寬
+                        if (
+                            canvasContext.lineWidth <= 5 || //
+                            canvasContext.lineWidth >= 20
+                        ) {
+                            isLineWidthIncreasing = !isLineWidthIncreasing;
+                        }
+                        isLineWidthIncreasing === true //
+                            ? canvasContext.lineWidth++
+                            : canvasContext.lineWidth--;
+
+                        drawLine(e);
+                    };
                 }
             }
         </script>
