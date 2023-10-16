@@ -1,20 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>HTML5 Canvas</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-<canvas id="draw" width="800" height="800"></canvas>
-<script>
-</script>
+    <head>
+        <meta charset="UTF-8" />
+        <title>HTML5 Canvas</title>
+        <link rel="icon" href="https://fav.farm/🔥" />
+    </head>
+    <body>
+        <canvas id="draw" width="800" height="800"></canvas>
 
-<style>
-  html, body {
-    margin: 0;
-  }
-</style>
+        <script>
+            const canvas = document.querySelector("#draw");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
-</body>
+            const canvasContext = canvas.getContext("2d");
+            canvasContext.lineWidth = 10;
+            canvasContext.lineCap = "round";
+            canvasContext.lineJoin = "round";
+            canvasContext.strokeStyle = "#bada55";
+            // ctx.globalCompositeOperation = "multiply";
+            const { startDrawing, exitDrawing, drawLinew } = new Draw(canvasContext);
+
+            // events
+            canvas.addEventListener("mousemove", drawLinew);
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mouseup", exitDrawing);
+            canvas.addEventListener("mouseout", exitDrawing);
+
+            function Draw(canvasContext) {
+                let hue = 0;
+                let lastPos = { x: 0, y: 0 };
+                let isDrawing = false;
+                let isLineWidthLarger = true;
+                return { startDrawing, exitDrawing, drawLine };
+
+                // helpers
+                function startDrawing(e) {
+                    isDrawing = true;
+                    lastPos = [e.clientX, e.clientY];
+                }
+                function exitDrawing() {
+                    isDrawing = false;
+                }
+                function drawLine(e) {
+                    if (!isDrawing) return;
+                    // console.log(e);
+                    canvasContext.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                    canvasContext.beginPath();
+                    canvasContext.moveTo(lastPos.x, lastPos.y); // start from
+                    canvasContext.lineTo(e.clientX, e.clientY); // go to
+                    canvasContext.stroke();
+                    lastPos = { x: e.clientX, y: e.clientY };
+
+                    if (hue++ >= 360) hue = 0;
+                    if (canvasContext.lineWidth >= 100 || canvasContext.lineWidth <= 1) isLineWidthLarger = !isLineWidthLarger;
+                    if (isLineWidthLarger) canvasContext.lineWidth++;
+                    else canvasContext.lineWidth--;
+                }
+            }
+        </script>
+
+        <style>
+            html,
+            body {
+                margin: 0;
+            }
+        </style>
+    </body>
 </html>
