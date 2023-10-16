@@ -102,4 +102,4 @@ canvas.addEventListener("mouseout", exitDrawing);
             };
         }
     }
-```
+    ```
