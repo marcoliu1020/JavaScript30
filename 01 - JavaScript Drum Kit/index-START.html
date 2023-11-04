@@ -70,17 +70,17 @@
                 if (!audio) return;
                 audio.currentTime = 0; // rewind the audio
                 audio.play();
-                addTransform(key);
+                addPlaying(key);
             }
             function removeTransition(e) {
                 // console.log(e); // has many event, but we want 'transform'
                 if (e.propertyName !== "transform") return; // skip, if it's not a transform
-                removeTransform(this);
+                removePlaying(this);
             }
-            function addTransform(element) {
+            function addPlaying(element) {
                 element.classList.add("playing");
             }
-            function removeTransform(element) {
+            function removePlaying(element) {
                 element.classList.remove("playing");
             }
         </script>
