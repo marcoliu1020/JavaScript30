@@ -1,75 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JS + CSS Clock</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <title>JS + CSS Clock</title>
+        <link rel="icon" href="https://fav.farm/🔥" />
+    </head>
+    <body>
+        <div class="clock">
+            <div class="clock-face">
+                <div class="hand hour-hand"></div>
+                <div class="hand min-hand"></div>
+                <div class="hand second-hand"></div>
+            </div>
+        </div>
 
+        <style>
+            html {
+                background: #018ded url(https://unsplash.it/1500/1000?image=881&blur=5);
+                background-size: cover;
+                font-family: "helvetica neue";
+                text-align: center;
+                font-size: 10px;
+            }
 
-    <div class="clock">
-      <div class="clock-face">
-        <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
-        <div class="hand second-hand"></div>
-      </div>
-    </div>
+            body {
+                margin: 0;
+                font-size: 2rem;
+                display: flex;
+                flex: 1;
+                min-height: 100vh;
+                align-items: center;
+            }
 
+            .clock {
+                width: 30rem;
+                height: 30rem;
+                border: 20px solid white;
+                border-radius: 50%;
+                margin: 50px auto;
+                position: relative;
+                padding: 2rem;
+                box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #efefef, inset 0 0 10px black, 0 0 10px rgba(0, 0, 0, 0.2);
+            }
 
-  <style>
-    html {
-      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
-      background-size: cover;
-      font-family: 'helvetica neue';
-      text-align: center;
-      font-size: 10px;
-    }
+            .clock-face {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                transform: translateY(-3px); /* account for the height of the clock hands */
+            }
 
-    body {
-      margin: 0;
-      font-size: 2rem;
-      display: flex;
-      flex: 1;
-      min-height: 100vh;
-      align-items: center;
-    }
+            .hand {
+                width: 50%;
+                height: 6px;
+                background: black;
+                position: absolute;
+                top: 50%;
 
-    .clock {
-      width: 30rem;
-      height: 30rem;
-      border: 20px solid white;
-      border-radius: 50%;
-      margin: 50px auto;
-      position: relative;
-      padding: 2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
-    }
+                /* TODO */
+                transform-origin: right; /* move origin to right, defaul is center*/
+                transform: rotate(90deg); /* init pointer to 12 clock */
+                transition: all 1s;
+                transition-timing-function: cubic-bezier(0.5, 2.56, 0.58, 1);
+            }
 
-    .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
-    }
+            .second-hand {
+                height: 2px;
+                background: #c11f1f;
+            }
 
-    .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
-      position: absolute;
-      top: 50%;
-    }
+            .min-hand {
+                height: 4px;
+                width: 45%;
+                margin-left: 5%;
+                background: black;
+            }
 
-  </style>
+            .hour-hand {
+                height: 6px;
+                width: 35%;
+                margin-left: 15%;
+                background: black;
+            }
+        </style>
 
-  <script>
+        <script>
+            const hourHand = document.querySelector(".hour-hand");
+            const minHand = document.querySelector(".min-hand");
+            const secondHand = document.querySelector(".second-hand");
 
+            const time = getMockTime(new Date(2023, 11, 6, 11, 55, 57));
+            setInterval(() => updateTime(time), 1000);
 
-  </script>
-</body>
+            // helper functions
+            // |||||||||
+            // vvvvvvvvv
+
+            function updateTime(now = new Date()) {
+                const second = now.getSeconds();
+                const secondDegree = (second / 60) * 360;
+                rotatePointer(secondHand, secondDegree);
+
+                const min = now.getMinutes();
+                const secondToMin = second / 60;
+                const minDegree = (min / 60) * 360 + (secondToMin / 60) * 360;
+                rotatePointer(minHand, minDegree);
+
+                const hour = now.getHours();
+                const minToHour = min / 60;
+                const hourDegree = (hour / 12) * 360 + (minToHour / 12) * 360;
+                rotatePointer(hourHand, hourDegree);
+
+                console.log({ hour, min, second });
+            }
+
+            function removeTransitionDuration(element) {
+                element.style.transitionDuration = "0s";
+            }
+
+            function resetTransitionDuration(element) {
+                element.style.transitionDuration = "";
+            }
+
+            function rotatePointer(element, degree) {
+                const offsetToZero = 90;
+                degree += offsetToZero;
+                element.style.transform = `rotate(${degree}deg)`;
+            }
+
+            function getTransitionDuration(element) {
+                const style = getComputedStyle(element);
+                return style.getPropertyValue("transition-duration");
+            }
+
+            function getMockTime(now = new Date()) {
+                setInterval(() => {
+                    now.setSeconds(now.getSeconds() + 1);
+                }, 1000);
+
+                return now;
+            }
+        </script>
+    </body>
 </html>
