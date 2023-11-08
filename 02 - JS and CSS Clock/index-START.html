@@ -89,7 +89,7 @@
             const minHand = document.querySelector(".min-hand");
             const secondHand = document.querySelector(".second-hand");
 
-            const time = getMockTime(new Date(2023, 11, 6, 11, 55, 57));
+            const time = getMockTime(new Date(2023, 11, 6, 11, 58, 57));
             setInterval(() => updateTime(time), 1000);
 
             // helper functions
@@ -99,19 +99,28 @@
             function updateTime(now = new Date()) {
                 const second = now.getSeconds();
                 const secondDegree = (second / 60) * 360;
-                rotatePointer(secondHand, secondDegree);
+                updatePointer(secondHand, secondDegree);
 
                 const min = now.getMinutes();
                 const secondToMin = second / 60;
                 const minDegree = (min / 60) * 360 + (secondToMin / 60) * 360;
-                rotatePointer(minHand, minDegree);
+                updatePointer(minHand, minDegree);
 
                 const hour = now.getHours();
                 const minToHour = min / 60;
                 const hourDegree = (hour / 12) * 360 + (minToHour / 12) * 360;
-                rotatePointer(hourHand, hourDegree);
+                updatePointer(hourHand, hourDegree);
 
                 console.log({ hour, min, second });
+            }
+
+            function updatePointer(element, degree) {
+                if (degree === 0) {
+                    removeTransitionDuration(element);
+                } else {
+                    resetTransitionDuration(element);
+                }
+                rotatePointer(element, degree);
             }
 
             function removeTransitionDuration(element) {
