@@ -115,6 +115,7 @@
             }
 
             function updatePointer(element, degree) {
+                // prevent counter clockwise from 354(deg) to 0(deg)
                 if (degree === 0) {
                     removeTransitionDuration(element);
                 } else {
