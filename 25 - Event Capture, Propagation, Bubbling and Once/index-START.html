@@ -1,49 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Understanding JavaScript's Capture</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body class="bod">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Understanding JavaScript's Capture</title>
+        <link rel="icon" href="https://fav.farm/🔥" />
+    </head>
+    <body class="bod">
+        <div class="one">
+            <div class="two">
+                <div class="three"></div>
+            </div>
+        </div>
 
-  <div class="one">
-    <div class="two">
-      <div class="three">
-      </div>
-    </div>
-  </div>
+        <style>
+            html {
+                box-sizing: border-box;
+            }
 
-<style>
-  html {
-    box-sizing: border-box;
-  }
+            *,
+            *:before,
+            *:after {
+                box-sizing: inherit;
+            }
 
-  *, *:before, *:after {
-    box-sizing: inherit;
-  }
+            div {
+                width: 100%;
+                padding: 100px;
+            }
 
-  div {
-    width: 100%;
-    padding: 100px;
-  }
+            .one {
+                background: thistle;
+            }
 
-  .one {
-    background: thistle;
-  }
+            .two {
+                background: mistyrose;
+            }
 
-  .two {
-    background: mistyrose;
-  }
+            .three {
+                background: coral;
+            }
+        </style>
 
-  .three {
-    background: coral;
-  }
-</style>
+        <button></button>
 
-<button></button>
-<script>
+        <script>
+            const divs = document.querySelectorAll("div");
 
-</script>
-</body>
+            for (const div of divs) {
+                div.addEventListener("click", log, { once: true });
+                div.removeEventListener("click", log);
+            }
+
+            function log(e) {
+                e.stopPropagation();
+                console.log(this.classList.value);
+            }
+        </script>
+    </body>
 </html>
